@@ -1,0 +1,245 @@
+Упражнение 4
+
+1. Случайни величини
+1.1. дискретни случайни величини
+1.2 непрекъснати случайни величини
+1.3 сингулярни 
+
+
+В R  имаме няколко основни функции, чрез които се дефинират основните разпределения (дискретни & непрекъснати):
+
+Distribution 		Function(arguments)
+beta 		- 	beta(shape1, shape2, ncp)
+binomial 	- 	binom(size, prob)
+chi-squared 	- 	chisq(df, ncp)
+exponential 	- 	exp(rate)
+gamma 		- 	gamma(shape, scale)
+logistic 	- 	logis(location, scale)
+normal 		- 	norm(mean, sd)
+Poisson 	- 	pois(lambda)
+Student's t 	- 	t(df, ncp)
+uniform 	- 	unif(min, max)
+
+1.1 Дискретни разпредления
+
+1.1.1 Бернулиево
+Можем да генерираме  Бернулиево разпределение като използваме sample (), runif () или rbinom () с размер = 1.
+
+n <- 1000
+x <- sample(c(0,1), n, replace=T)
+ x <- sample(c(0,1), n, replace=T, prob=c(0.3,0.7))
+ x <- runif(n) > 0.3
+ x <- rbinom(n, size=1, prob=0.2)
+
+1.1.2 Хипергеометрично разпределение
+ 
+За хипергеометрично разпределени използваме функцията rhyper(), както и следващите фунции, за които имаме параметрите:
+ 
+ #dhyper(x, m, n, k, log = FALSE)
+ #phyper(q, m, n, k, lower.tail = TRUE, log.p = FALSE)
+ #qhyper(p, m, n, k, lower.tail = TRUE, log.p = FALSE)
+ #rhyper(nn, m, n, k)
+ #x, q -	vector of quantiles representing the number of white balls drawn without replacement from an urn which contains both black and white balls.
+ #m 	- the number of white balls in the urn.
+ #n 	- the number of black balls in the urn.
+ #k 	- the number of balls drawn from the urn.
+ #p 	- probability, it must be between 0 and 1.
+ #nn 	-number of observations. If length(nn) > 1, the length is taken to be the number required.
+ 
+ 
+ x <- rhyper(n=100, 15, 5, 5) 
+ x
+
+1.1.3 Геметрично разпределение
+ 
+ N <- 10000 #  брой опити
+  x <- rgeom(N, .5) # вероятност 0.5
+  x <- rgeom(N, .01) #вероятност 0.01
+ x
+ 
+1.1.4 Мултиномиално
+
+Задава се като:
+
+sample(1:6, 100, replace=T, prob= rep(1/6,6))
+
+
+1.1.5 Отрицателно биномно разпределение
+
+Отрицателното биномиално разпределение е разпределението на броя на отказите преди k успехите в поредица от събития на Бернули.
+
+ N <- 100000
+ x <- rnbinom(N, 10, .25)
+ x
+
+1.1.6 Поасонова разпределение
+
+Можем да извлечем n стойности от разпределение на Poisson със средна стойност, зададена от аргумента lambda.
+
+ x <- rpois(n=100, lambda=3)
+ x
+
+1.2 Непрекъснати разпределения
+
+1.2.1  Хи-квадрат разпределение:
+#Quantile of the Chi square distribution:
+
+qchisq(.95,1) #[1] 3.841459
+qchisq(.95,10) #[1] 18.30704
+qchisq(.95,100) #[1] 124.3421
+
+1.2.2 Експоненциално разпределение
+можем да извадим n стойности от експоненциално разпределение с дадена скорост (по подразбиране е 1), използвайки функцията rexp ()
+
+x <- rexp(n=100, rate=1)
+x
+
+1.2.3 Разпределение на Фишър 
+ 
+   
+ par(mar=c(3,3,1,1))
+ x <- seq(0,5,len=1000)
+  plot(range(x),c(0,2),type="n")
+  grid()
+  lines(x,df(x,df1=1,df2=1),col="black",lwd=3)
+  lines(x,df(x,df1=2,df2=1),col="blue",lwd=3)
+  lines(x,df(x,df1=5,df2=2),col="green",lwd=3)
+  lines(x,df(x,df1=100,df2=1),col="red",lwd=3)
+  lines(x,df(x,df1=100,df2=100),col="grey",lwd=3)
+  legend(2,1.5,legend=c("n1=1, n2=1","n1=2, n2=1","n1=5, n2=2","n1=100, n2=1","n1=100, n2=100"),col=c("black","blue","green","red","grey"),lwd=3,bty="n")
+ 
+1.2.4 Гама разпределение
+
+Можем да извадим n стойности от гама разпределение с даден параметър на формата и параметър на мащаба ? с помощта на функцията rgamma (). Като алтернатива може да бъде зададен параметър на формата и параметър на скоростта ? = 1/?.
+x <- rgamma(n=10, scale=1, shape=0.4)
+x <- rgamma(n=100, scale=1, rate=0.8)
+x
+
+1.2.5. Нормално разпределени и свързани с него разпределения
+
+Можем да извадим n стойности от нормално или гаусово разпределение с дадена средна стойност (по подразбиране е 0) и sd (по подразбиране е 1), използвайки функцията rnorm ()
+
+x <- rnorm(n=100, mean=0, sd=1)
+x
+
+#Квантил от нормалното разпределение
+
+qnorm(.95) #[1] 1.644854
+qnorm(.975) #[1] 1.959964
+qnorm(.99) #[1] 2.326348
+
+1.2.6 Равномерно разпределение
+
+
+Можем да извадим n стойности от равномерно разпределение (известно също като правоъгълно разпределение) между две стойности (по подразбиране са 0 и 1), използвайки функцията runif ()
+ runif(n=100, min=0, max=1)
+
+Table 1:  Common Probability      Distribution Functions in R
+
+Name 	  Probability Density 	Cumulative Distribution 	Quantile
+Normal 	   dnorm(Z,mean,sd) 	  pnorm(Z,mean,sd) 	       qnorm(Q,mean,sd)
+Poisson     dnorm(N,lambda) 	   pnorm(N,lambda) 	        qnorm(Q,lambda)
+Binomial    dbinom(N,size,prob)    pbinom(N,size,prob) 	       qbinom(Q,size,prob)
+Exponential  dexp(N,rate) 	     pexp(N,rate) 	      qexp(Q,rate)
+?2           dchisq(X,df) 	   pchisq(X.df) 	        qchisq(X,df)
+
+# Normal distribution 
+z<-seq(-3.5,3.5,0.1)  # 71 points from -3.5 to 3.5 in 0.1 steps
+q<-seq(0.001,0.999,0.001)  # 1999 points from 0.1% to 99.9% on 0.1% steps
+dStandardNormal <- data.frame(Z=z, 
+                              Density=dnorm(z, mean=0, sd=1),
+                              Distribution=pnorm(z, mean=0, sd=1))  
+qStandardNormal <- data.frame(Q=q, 
+                              Quantile=qnorm(q, mean=0, sd=1))  
+head(dStandardNormal)
+
+head(qStandardNormal)
+plot(qStandardNormal)
+plot(dStandardNormal)
+
+
+зад. 1 
+Приемете случайна променлива Z се разпределя според нормалното разпределение със средно 6 и стандартно отклонение 4.
+Каква е вероятността Z да приеме стойност между -1 и 3?
+# A: извадете c.d. на -1 от c.d. на 3
+pnorm (3, 6, 4) - pnorm (-1, 6, 4) # [1] 0.1865682
+
+зад. 2
+Да приемем, че случайна променлива Z се разпределя според нормалното разпределение със средно 20 и стандартно отклонение 10. Какъв е 90% доверителен интервал около средната стойност за очакваната стойност на Z?
+
+# A: Използвайте квантилната функция
+горна <- qnorm (0.95, 20, 10)
+по-ниско <- qnorm (0,05, 20, 10)
+c (долна, горна)
+V: Da priemem, che sluchai?na promenliva Z se razpredelya spored normalnoto razpredelenie sus sredno 20 i standartno otklonenie 10. 
+Какъв е 90% доверителен интервал около средната стойност за очакваната стойност на Z?
+
+
+# Използвайте квантилната функция
+upper <- qnorm(0.95, 20, 10)
+lower <- qnorm(0.05, 20, 10)
+c(lower, upper)
+
+
+#Poisson Distribution
+lower<-qpois(0.001, lambda=2.5)
+upper<-qpois(0.999, lambda=2,5)
+n<-seq(lower,upper,1)
+q<-seq(0.001,0.999,0.001)
+dPoisson25 <- data.frame(N=n, 
+                         Density=dpois(n, lambda=2.5),
+                         Distribution=ppois(n, lambda=2.5))  
+qPoisson25 <- data.frame(Q=q, Quantile=qpois(q, lambda=2.5))  
+head(dPoisson25)
+head(qPoisson25)
+plot(dPoisson25)
+plot(qPoisson25)
+
+зад. 3
+Да предположим, че топка от зоната за шофиране в съседство се приземява във вашия двор със средна скорост 3 топки на час през деня. 
+Каква е вероятността 10 или по-малко топки за голф да кацнат във вашия двор през следобед, ако приемем, че следобедът е дълъг 5 часа?
+
+# средната стойност е 15 = 3 * 5 за целия следобед
+ppois (10, 15)
+
+зад. 4
+Да предположим, че една монета е претеглена, така че тя да изплува с глави 60% от времето. 
+Каква е вероятността, че ще получите 25 или повече глави след 50 обръщания?
+
+# Използвайте pbinom, за да получите вероятността от 25 или по-малко глави, и извадете от 1
+pbinom (25,50,0.6)
+
+Зад. 5
+Да предположим, че сте обърнали честна монета 100 пъти. Кое е числото N, което в 90% от времето броят на главите е по-малък или равен на N?
+
+#Използвайте квантилната функция.
+qbinom (0.9, 100, 0.5)
+
+#Exponential Distribution
+   
+   lower <- floor(qexp(0.001, rate=0.2))
+   upper <- ceiling(qexp(0.999, rate=0.2))
+   t <- seq(lower,upper,0.1)
+   q <- seq(0.001,0.999,0.001)
+   dexp02 <- data.frame(T=t, 
+                        Density=dexp(t, rate=0.2),
+                        Distribution=pexp(t, rate=0.2))  
+   qexp02 <- data.frame(Q=q, Quantile=qexp(q, rate=0.2))  
+   head(dexp02)
+   head(qexp02)
+
+зад. 6
+Да приемем, че животът на метастабилен ядрен изомер ex се разпределя експоненциално със среден живот от 20 минути. 
+Каква е вероятността, че ядрото ще се разпадне в рамките на следващите 15 минути?
+
+# Ставката е 1/20 = 0,05. Използвайте pexp, за да получите вероятността от разпад
+# за 15 или по-малко минути
+pexp (15, 0,05)
+
+Зад. 7
+Да приемем, че електрическата крушка има среден живот от 1000 часа. 
+Каква е вероятността електрическата крушка да оцелее до 2000 часа?
+
+# Ставката е 1/1000 = 0,001. Използвайте pexp, за да получите вероятността от изгаряне вътре
+# 2000 часа и извадете от 1.
+1 - pexp (2000, 0,001)
