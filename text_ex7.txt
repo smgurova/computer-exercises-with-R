@@ -1,0 +1,191 @@
+Упражнение 7
+
+Хипотези
+
+зад. 1
+Компания твърди, че поне 60% от клиентите са доволни от нейните услуги. Направено е проучване при 100 лица, 54
+от които казват, че са доволни. Можели да се приеме  твърдението на компанията. Променя ли се изводът, ако 440 от
+1000 човека кажат, че са доволни.
+
+#X е стойността на theta - вероятност на очакване за доволност
+# Хипотези:
+# H0= theta=theta0; нулева хипотеза, която се стремим да приемем
+# H1=  theta > theta0, алтернативна хипотеза.
+
+# H0:m=m0  -> x1,..,xn  ... xn=sum xi/n
+# допускаме H0, че е вярно. Пресмятаме  xn_ (веротност средна). Ако е малка отхвърляме хипотезата и приемаме H1
+#p-value -  ниво на съгласие, стойсноти след средата
+# p-value -  е малко => вероятността е малка (най-често е под 0.1)
+
+
+# ако се сравняват пропорции prop.test()
+# ако е нормално разпределение  t.test()
+
+
+# H0: p>=0.6
+# H1: p<0.6
+
+zad1.hipoteza=function()
+{
+  # fisrt part from the ex.1
+  prop.test(54,100,p=0.6) #p=0.2616 it is accepted
+  # second part from ex.1
+  prop.test(540,1000,p=0.6) # p=0.000127 reject
+  
+}
+
+#1-sample proportions test with continuity correction
+#data:  54 out of 100, null probability 0.6
+#X-squared = 1.2604, df = 1, p-value = 0.2616
+#alternative hypothesis: true p is not equal to 0.6
+#95 percent confidence interval:
+ # 0.4377639 0.6391280
+#sample estimates:
+ # p 0.54
+
+#1-sample proportions test with continuity correction
+#data:  540 out of 1000, null probability 0.6
+#X-squared = 14.751, df = 1, p-value = 0.0001227
+#alternative hypothesis: true p is not equal to 0.6
+#95 percent confidence interval:
+ # 0.5085147 0.5711742
+#sample estimates:
+# p  0.54 
+
+зад. 2
+Данните 'vacation' от пакета 'UsingR', съдържащ броя на платените почивни дни за работещите в текстилната
+индустрия. Проверете хипотезата, че те почиват 24 дни.
+
+library(UsingR)
+data(vacation)
+vacation
+# [1] 23 12 10 34 25 16 27 18 28 13 14 20  8 21 23 33 30 13 16 14 38 19  6 11 15 21 10 39 42 25
+#[31] 12 17 19 26 20
+
+zad2.hipotezi=function()
+{
+qqnorm(vacation)
+qqline(vacation)
+shapiro.test(vacation) # малки стойсности на p-value  показват, че не са нормални
+#t.test(vacation, mu=24,alyternative=c("two.sided","less","greater"))
+}
+zad2.hipotezi()
+#Shapiro-Wilk normality test
+#data:  vacation
+#W = 0.95272, p-value = 0.1374
+
+# използвайки  t.test()
+#One Sample t-test
+#data:  vacation
+#t = -2.2584, df = 34, p-value = 0.03045
+#alternative hypothesis: true mean is not equal to 24
+#95 percent confidence interval:
+ # 17.37768 23.65089
+#sample estimates:
+ # mean of x 
+#20.51429 
+
+Зад. 3
+Времето за излекуване на пациенти, взимащи ново лекарство в дни е следното:
+11, 8, 10, 13, 11, 16, 9,9, 11, 6, 9, 17, 7, 19, 10, 2, 11, 8,8, 13.
+За да се избегнат психологични ефекти се разглежда и група вземаща пласебо. 
+Времето за излекуване на тези пациенти е:
+14,7, 16, 18, 16, 10, 16,10, 6, 15, 11, 20, 9, 18, 14, 19, 12, 9, 12, 13.
+Може ли да се приеме, че новото лекарство дава резултати?
+
+# xi<-N(EX,DX)
+# yi<-N(EY,DY)
+# suma xi<-N(nEX,nDX)
+# suma xi/n<-N(EX,DX/n)
+# suma yj<-N(mEY,mDY)
+# suma yj/n<-N(EY,DY/m)
+#  xn- yn<-N(EX-EY,DX/n+DY/m)
+#t=(xn-yn-(EX-EY))/sqrt(DX/n-DY/m)
+# p-value  е по-малко, H0 са с еднакви извадки, в противен случай H1- различни извадки
+#
+#H0: EX=EY
+#H1 EX<EY
+
+zad3.twosample=function()
+{
+x=c(11, 8, 10, 13, 11, 16, 9,9, 11, 6, 9, 17, 7, 19, 10, 2, 11, 8,8, 13)
+y=c(14,7, 16, 18, 16, 10, 16,10, 6, 15, 11, 20, 9, 18, 14, 19, 12, 9, 12, 13)
+# test for normal distribution
+qqnorm(x)
+qqnorm(y)
+# they are almost on the same line
+dx=var(x)/20
+ex=mean(x)
+dy=var(y)/20
+ey=mean(y)
+v=sqrt(dx+dy)
+t=(ex-ey)/v
+p.val=pt(t,df=38)
+t.test(x,y,alternative="less",paired=F,var.equal=F)
+# paired - if there are paired F-FALSE
+# var. equal - if they have one and the same variance  
+}
+zad3.twosample()
+#Welch Two Sample t-test
+#data:  x and y
+#t = -2.2746, df = 37.962, p-value = 0.01433
+#alternative hypothesis: true difference in means is less than 0
+#95 percent confidence interval:
+ # -Inf -0.7375404
+#sample estimates:
+ # mean of x mean of y 
+#10.40     13.25 
+
+зад. 4
+Сравняват се два радара за определяне на скоростта на автомобил. Направени са 10 наблюдения като всяка
+кола, преминаваща кола е измервана и с два радара. Измерванията на първата са:
+70,85,63,54,65,80,75,95,52,55
+а на втория:
+72, 86,64,55,63,80,78,97,53,57. Да се провери дали двата радара са еднакви.
+
+zad.4twosample=function()
+{
+x=c(70,85,63,54,65,80,75,95,52,55)
+y=c(72, 86,64,55,63,80,78,97,53,57)
+qqnorm(x)
+qqnorm(y)
+qqline(x)
+qqline(y)
+# all data are normal
+#paired T (TRUE) because for one car the two radat give one and the same value
+t.test(x,y,alternative="two.sided",paired=T)
+}
+zad.4twosample()
+#Paired t-test
+#data:  x and y
+#t = -2.5385, df = 9, p-value = 0.03179
+#alternative hypothesis: true difference in means is not equal to 0
+#95 percent confidence interval:
+ # -2.0802681 -0.1197319
+#sample estimates:
+ # mean of the differences 
+#-1.1 
+
+
+Зад. 5
+Фармацевтична компания разработва ново лекарство за предпазване от настинка. Компанията твъърди, че то
+действа по еднакъв начин на жените и  на мъжете. Лекарството е приложено върху 100 жени и 200 мъже.
+Оказало се, че 38 жени и 98 мъже са заболели. Може ли с ниво на значимост 0.05 да се приеме,
+че лекарството действа еднакво.
+ 
+zad5.twosample=function()
+{
+prop.test(c(38,98),c(100,200),alternative="two.sided")
+# we look the % of significance (0.95=1-0.05), but in the text they want  
+# 0.5 => H0 is not rejectet.
+}
+zad5.twosample()
+#2-sample test for equality of proportions with continuity correction
+#data:  c(38, 98) out of c(100, 200)
+#X-squared = 2.8263, df = 1, p-value = 0.09273
+#alternative hypothesis: two.sided
+#95 percent confidence interval:
+ # -0.23518764  0.01518764
+#sample estimates:
+ # prop 1 prop 2 
+#0.38   0.49 
