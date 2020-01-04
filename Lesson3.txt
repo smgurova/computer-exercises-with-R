@@ -1,0 +1,165 @@
+Упражнение 3
+
+The number of possible combinations is   C(n,r) = \frac{n!}{r!(n-r)!}.
+Some recursive relations:
+C(n,r) = C(n,n-r)
+C(n,l)C(l,r) = C(n-1,r)C(n-1,r-1)
+\sum_{k=0}^n C(n,k) = 2^n
+C(m+n,r)=C(m,0)C(n,r)+C(m,1)C(n,r?1)+…C(m,r)C(n,0)
+
+Combinations, among many other things, give the coefficients for the binomial expression:
+(a+b)^n = \sum_{i=0}^n C(n,i) a^{n-i}b^i
+
+ex.1
+За да направите матрица с всички комбинации от елементите на S (с размер n), взети r наведнъж:
+
+S <- letters[1:5]
+n <- length(S)
+r <- 3
+result <- t(combn(S,r))
+result
+
+apply(result,1,function(x) paste0(x,collapse="")) # just return as a vector of strings
+
+The number of possible combinations is C(n,r) = \frac{n!}{r!(n-r)!}. 
+This number is computed in R by the choose function:
+
+choose(5,0)
+## [1] 1
+choose(5,1)
+## [1] 5
+choose(5,2)
+## [1] 10
+choose(5,3)
+## [1] 10
+choose(5,4)
+## [1] 5
+choose(5,5)
+## [1] 1
+
+ex.2 
+Триъгълника на Паскал
+
+pascal <- matrix(rep(NA,100),ncol=10)
+for(i in 0:10)
+  for(j in 0:i)
+    pascal[i,j] <- choose(i,j)
+print(pascal, na.print=" " )
+
+
+За да направите същото, но където е подходяща поръчката, т.е.
+  пермутация (ако m е равна на дължината на S, получаваме всички възможни подредби) (ex.1):
+
+library(gtools)
+result <- permutations(n, r, S)
+apply(result,1,function(x) paste0(x,collapse=""))
+
+Броят на възможните пермутации е P (n, r) = n! (n-r)!
+Без ограничения
+
+result <- as.matrix(expand.grid(lapply(numeric(r), function(x) S)), ncol=r)
+apply(result,1,function(x) paste0(x,collapse=""))   #This is a vector with r^n elements.
+
+ex.3
+Напишете функция, която по зададено число p  пресмята колко човека n  трябва да изберете
+по случаен начин, така че вероятността рожденните дни на поне двама от тях да съвпадат да е по-голяма от p.
+
+func3=function(p)
+{x=1
+currp=1 # the probability
+while(currp>p) #currp should be less than p, p is also probability
+{currp=(currp*(366-x))/366 # calculate the new probability 
+x=x+1}  # number of people
+return(x)} # return number of people
+ 
+func3(0.2) # p=02. probability  [1] 35 people
+func3(0.5)  #p-0.5  [1] 23   people
+
+
+ex.4
+Хвърлете 100 пъти зар, колко 6-ци се появяват.
+
+fun4=function()
+{randoms=sample(1:6,100,replace=TRUE)
+br=0
+for(num in randoms)
+{if(num==6)
+{br=br+1
+}
+  }
+  return(br)
+}
+fun4() # write it in the console in this way , to see the result [1] 13
+
+ex.5
+Хвърлете монета 10 пъти. Появили се последователността 'EETET'? Хвърляйте монетата, докато се
+появи, колко хвърляния направихте?
+
+fun5=function()
+{
+  res=c('E','E','T','E','T') #  create our result
+  vector=sample(c('E','T'),10,replace=TRUE) # sampling  a vector cointaing E, T.
+  # 10 times  with replacing
+  if(findVectorinVector(vector,res))  # function check of the vector and result
+  {return ("YES")}
+  else
+  {br=10   # the coin is thrown 10 times
+  while(TRUE) # while it is true make the statements in the body below
+  {br=br+1     
+  newRand=sample(c('E','T'),1,replace=TRUE) # generate new vector
+  vector=append(vector,newRand,length(vector)+1)
+  #  append(x, values, after=length(x))
+#  x: vector
+ # values: for appends
+#  after: subscript position which the values are to be appended
+
+  if(findVectorinVector(vector,res))
+  {return(br);}
+  }
+  }
+  }
+findVectorinVector=function(source,item)
+{
+  lens=length(source)
+  len=length(item)
+  start=1
+  while(TRUE)
+  {
+   # print("s")
+  # print(star)
+  #  print("len")
+   # print(start+len-1)
+  #  print("res")
+    print(source[start:(start+len-1)])
+    if(all(source[start:(start+len-1)]==item))
+       {return(TRUE)}
+       if(start+len>lens)
+       {return(FALSE)}
+       start=start+1
+  }
+}
+fun5() # call the function
+
+ex.6
+Хвърлят се 20 зара. Каква е вероятността да се паднат по-малко от 3 6-ци?
+Сравнете теоретичната вероятност с експерименталните данни.
+
+#https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Binomial.html
+
+The binomial distribution with size = n and prob = p has density
+p(x) = choose(n, x) p^x (1-p)^(n-x)
+
+
+fun6=function()
+{
+  # n number 
+  #size - how many dice we have
+  #prob - probability of 1 manner
+  y=rbinom(n=100,size=20,prob=1/6)
+  pbinom(2.9,20,1/6)
+  #p(x=10)
+  #pbinom(9.9,20,1/6)
+  #p(5<x<=8)
+  #pbinom(8,20,1/6)-pbinom(4.9,20,1/6)
+}
+fun6() #[1] 0.3286591
