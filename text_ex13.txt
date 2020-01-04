@@ -1,0 +1,125 @@
+Упражнение 13
+
+Задачи от изпит
+
+зад.1 
+Напишете фунцкия f(x,n) , която по зададено реално число x  и цяло число n  пресмята x^1+x^2/2+...+x^n/n.
+Генерирайте векторите X={2.3,2.5,2.7,...,10.01} и N={2,3,5,2,3,5,...}, които имат еднаква размерност. 
+Приложете функцията върху елементите на тези вектори. Пресметнете сумата на получените резултати.
+
+izpitzad1=function()
+{
+X=seq(2.3,10.01,0.2) # start from 2.3, ends with 10.01, step=0.2
+Y=rep(c(2,3,5),length(X)/3)
+N[40]=2
+i=1
+sum=0
+while(i<=40)
+{
+sum=f(X[i],N[i])+sum
+i=i+1
+}
+return(sum)
+ }
+f=function(x,n)
+{
+sum=x
+i=2
+while(i<=n)
+{
+sum=sum+(x^i)/i
+i=i+1
+}
+return(sum)
+}
+
+зад.2
+Разгледайте данните 'state.x77'. Определете 5те щата с най-ниска гъстота. Определете общото населените на 10те
+най-големи като територии щата. Колко са щатите с продължителност на живота над 70 години? 
+Къде гъстотата на населението е най-голяма? 
+
+state.x77
+
+A)
+izpitzad2a=function()
+{
+data=state.x77
+res=sort(data[,3])
+print(res[1:5])
+}
+izpitzad2a()
+#        Iowa       Nevada South Dakota        Idaho       Kansas 
+ #        0.5          0.5          0.5          0.6          0.6 
+
+B)
+izpit2b=function()
+{
+data=state.x77
+ind=order(data[,8],decreasing=T)a
+states=data[ind,1]
+summ=sum(states[1:10])
+print(states)
+return(summ)
+}
+izpit2b()
+
+C)
+izpit2c=function()
+{
+data=state.x77
+life=data[,4]
+print(length(life[life>70]))
+}
+izpit2c()
+
+D)
+izpit2d=function()
+{
+population=state.x77[,1]
+areas=state.x77[,8]
+density=population/areas
+maxdensity=max(density)
+maxind=density[density==maxdensity]
+}
+izpit2d()
+
+зад.3
+Създайте dataframe, съдържащ променливите x3,y3  от данните 'anscombe'. Представете графично, потърсете линейна връзка между тях.
+Намерете 'outliers'. Пресметнете коефициентът на корелация и правата на регресията.
+
+izpit3=function(0
+data=data.frame(x3=anscombe$x3,y3=anscombe$y3)
+l=lm(data$y3~data$x3)
+plot(l)
+abline(l)
+summary(l)
+cor(data$x3,data$y3) #[1] 0.8162867
+}
+
+Зад.4
+Фармацевтична компания е разработила ново лекарство за лечени на настининка. Компанията твърди, че лекарството има по-ефективно
+действие при жените. Направено е изследване върху 100 жени и 200 мъже. Оказало се, че 38% от жените и 50% от мъжете не са получили
+подобрение на симптомите. Фомулирайте и проверете хипотезизата за твърдението на компанията при ниво на значимост 0.01.
+
+izpit4=function()
+{
+w=100
+m=200
+betterw=38
+betterm=100
+#H0: %w>%m
+#H1: otherwise
+
+prop.test(c(38,100),c(100,200),alternative="less",conf.level=0.01)
+}
+
+2-sample test for equality of proportions with continuity correction
+
+data:  c(38, 100) out of c(100, 200)
+X-squared = 3.3967, df = 1, p-value = 0.03266
+alternative hypothesis: less
+1 percent confidence interval:
+ -1.0000000 -0.2521971
+sample estimates:
+prop 1 prop 2 
+  0.38   0.50 
