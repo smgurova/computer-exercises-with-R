@@ -1,0 +1,253 @@
+”пражение 9
+
+#Ћинейна регреси€
+
+# ÷елта на линейна регреси€ е да моделира непрекъсната променлива Y като математическа функци€ на една или повече X променливи, така че да можем да използваме този регресионен модел за прогнозиране на Y, когато е известен само X.
+# “ова математическо уравнение може да се обобщи по следни€ начин:
+#Y = beta1 + beta2X + epsilon, където, beta1 е прехватът и beta2 е наклонът.
+#  олективно, те се наричат beta1, beta2 - регресионни коефициенти. epsilon е терминът за грешка, частта от Y регресионни€ модел не е в състо€ние да об€сни.
+
+# √рафичен анализ:
+# √рафик на разсейване (scatter plot): ¬изуализирайте линейната връзка между предиктора и отговора
+#Box plot: «а да забележите външни наблюдени€ в променливата. Ќаличието на остатъци във ваши€ предсказател може драстично да повли€е на прогнозите, тъй като те могат лесно да повли€€т на посоката / наклона на лини€та, ко€то е най-подход€ща.
+# √рафик на плътност (density plot): «а да видите разпределението на променливата на прогноза. ¬ идеални€ случай се предпочита близко до нормалното разпределение (крива форма на камбана), без да се изкрив€ва нал€во или над€сно.
+
+#http: //r-statistics.co/Linear-Regression.html
+
+«ад.1
+¬ данните 'anscombe' са дадени четири различни набори от наблюдени€ Xi, Yj. 
+ѕроверете за кои случаи линейни€ модел е подход€щ.
+
+#If we want to reject H0, we have to look the value for p-value. 
+#If it's big it can also be a mistake, but  we can't comfirm it with p-value.
+#We have to see the plot line in the scatter plot.
+
+zad1.Lreg=function()
+{
+attach(anscombe)
+l1=lm(y1~x1)
+plot(l1)
+#return(summary(l1))
+l2=lm(y2~x2)
+plot(l2)
+#return(summary(l2))
+l3=lm(y3~x3)
+plot(l3)
+#return(summary(l3))
+l4=lm(y4~x4)
+plot(l4)
+#return(summary(l4))
+}
+
+«ад.2
+“ърси се връзката между консумаци€та на бира и ниво на алкохол в кръвта. Ќаправени са наблюдени€та:
+
+брой бири   		5     2     9     8     3    7     3    5     3     5
+алкохол в кръвта 	0.1  0.03  0.19  0.12  0.04 0.095 0.07  0.06  0.02  0.05
+
+ѕостройте линеен модел. ѕроверете хипотезата, че изпиването на още 1 бира увеличава процента на алкохол с 0.02 
+срещу алтернативата, че увеличаването е по-малко. “ествайте длаи свободни€ член в модела е равен на нула.
+
+zad2.lReg=function()
+{
+y=c(5,2,9, 8,3,7,3,5,3,5)
+x=c(0.1,0.03,0.19,0.12,0.04,0.095,0.07,0.06,0.02,0.05)
+l=lm(y~x)
+sm=summary(l)
+b1=sm$coefficients[2,1]
+e1=sm$coefficients[2,2]
+t=(b1-0.02)/e1
+#return(t)
+res=pt(t,df=8,lower.tail=T)
+#return(res)
+#if res is big => H0 is accepted
+}
+#Call:
+ # lm(formula = y ~ x)
+
+#Residuals:
+ # Min      1Q  Median      3Q     Max 
+#-0.0275 -0.0187 -0.0071  0.0194  0.0357 
+
+#Coefficients:
+ # Estimate Std. Error t value Pr(>|t|)    
+#(Intercept) -0.018500   0.019230  -0.962 0.364200    
+#x            0.019200   0.003511   5.469 0.000595 ***
+  ---
+ # Signif. codes:  0 С***Т 0.001 С**Т 0.01 С*Т 0.05 С.Т 0.1 С Т 1
+
+#Residual standard error: 0.02483 on 8 degrees of freedom
+#Multiple R-squared:  0.789,	Adjusted R-squared:  0.7626 
+#F-statistic: 29.91 on 1 and 8 DF,  p-value: 0.0005953
+  
+
+зад.3
+√алилео изследва траектори€та, по ко€то падар обектите, които преди пускане имат хоризонтална скорост. «а целта
+измерва две величини-височина и разсто€ние на падане.
+
+височина    100   200   300   450   600   800  1000
+разсто€ние  253   337   395   451   495   534  574  
+
+ћерната единица е използваната по това време в »тали€ е 'пунти'. ѕостройте линеен модел, описващ данните. 
+ѕредставете графично резултата. ѕотърсете евентуално друг по-добър модел.
+ 
+
+# abline(a = NULL, b = NULL, h = NULL, v = NULL, reg = NULL, coef = NULL, untf = FALSE, ...)
+#This function adds one or more straight lines through the current plot.
+
+d=c(253 ,  337,   395,   451,   495,   534,  574)
+h=c(100,   200 ,  300 ,  450 ,  600 ,  800,  1000)
+plot(d,h,
+     main="Plot",
+     ylab="height",
+     xlab="distance")
+#plot the original set ot values
+l=lm(d~h) #linear regression
+abline(l) #
+plot(l,which=1)
+summary(l)
+#Call:
+ # lm(formula = d ~ h)
+
+#Residuals:
+  #1        2        3        4        5        6        7 
+#-49.8788   0.7086  25.2959  31.1769  25.0578  -2.7675 -29.5929 
+
+#Coefficients:
+ # Estimate Std. Error t value Pr(>|t|)    
+#(Intercept) 269.46607   24.18421  11.142 0.000102 ***
+ # h             0.33413    0.04181   7.992 0.000495 ***
+  ---
+  #Signif. codes:  0 С***Т 0.001 С**Т 0.01 С*Т 0.05 С.Т 0.1 С Т 1
+
+#Residual standard error: 33.5 on 5 degrees of freedom
+#Multiple R-squared:  0.9274,	Adjusted R-squared:  0.9129 
+#F-statistic: 63.88 on 1 and 5 DF,  p-value: 0.0004951
+
+l2=lm(d~h+I(h^2))
+sm2=summary(l2)
+sm
+#Call:
+#lm(formula = d ~ h + I(h^2))
+
+#Residuals:
+ # 1       2       3       4       5       6       7 
+#-14.420   9.192  13.624   2.060  -6.158 -12.912   8.614 
+
+#Coefficients:
+ # Estimate Std. Error t value Pr(>|t|)    
+#(Intercept)  2.002e+02  1.695e+01  11.811 0.000294 ***
+ # h            7.062e-01  7.568e-02   9.332 0.000734 ***
+  #I(h^2)      -3.410e-04  6.754e-05  -5.049 0.007237 ** 
+  ---
+#  Signif. codes:  0 С***Т 0.001 С**Т 0.01 С*Т 0.05 С.Т 0.1 С Т 1
+
+#Residual standard error: 13.79 on 4 degrees of freedom
+#Multiple R-squared:  0.9902,	Adjusted R-squared:  0.9852 
+#F-statistic: 201.1 on 2 and 4 DF,  p-value: 9.696e-05
+ 
+#The one-way analysis of variance (ANOVA), also known as one-factor ANOVA, is an extension of independent 
+#two-samples t-test for comparing means in a situation where there are more than two groups. In one-way ANOVA, the data is organized into several groups 
+#base on one single grouping variable (also called factor variable). This tutorial describes the basic principle of the one-way ANOVA test and provides
+#practical anova test examples in R software.
+
+#ANOVA test hypotheses:
+#Null hypothesis: the means of the different groups are the same
+#Alternative hypothesis: At least one sample mean is not equal to the others  
+  
+anova(l,l2)
+#Analysis of Variance Table
+
+#Model 1: d ~ h
+#Model 2: d ~ h + I(h^2)
+#Res.Df    RSS Df Sum of Sq     F   Pr(>F)   
+#1      5 5611.6                               
+#2      4  761.2  1    4850.4 25.49 0.007237 **
+  ---
+# Signif. codes:  0 С***Т 0.001 С**Т 0.01 С*Т 0.05 С.Т 0.1 С Т 1
+  
+plot(l2,which=1)
+plot(h,d)
+abline(l)
+c=l2$coeffients
+x=seq(min(h),max(h),length.out=100)
+y=c[1]+c[2]*x+c[3]*x^2+c[4]*x^3
+lines(x,y,col='blue')
+
+
+#plot na dannite dava nesho, koeto ne prilicha na prava, zatova probvame s po-golemi stepeni 2,3
+# izpolzvame I(h^2)/I(h^3), za da vzemem indentiteta, zashoto she pravi vs vujmojni proizvedeniq \
+
+«ад.4
+¬секи от трима провер€ващи е прегледал по 10 изпитни работи. ћожем ли да приемем, че провер€ващите имат 
+еднакви критерии?
+
+провер€ващ 1	5 4 4 6 4 6 3 3 4 5
+провер€ващ 2	3 2 4 5 3 4 3 4 2 4
+провер€ващ 3	4 6 4 2 4 5 5 3 6 4
+
+#x1:x11,x12,...xn1,
+....
+#xn:xn1,xn2,...xnn
+
+#H0: Ex1=Ex2=..=Exn  (* in this case n=3*)
+
+#SStot total sum square=suma suma (xij-x_)^2 ( totalno razsejvane na vs grupi)
+#SSwithin=suma(xij-xj_)^2 (vutreshno razsejvane na grupata)
+#SStreatment=suma(xj_-x)^2 (mejdugrupovo razsejvane)
+#SStot=SSwithin+SStreatment
+#t=(SStreatment/(p-1))/(SSwithin/(n-p))
+#t<-F (Fisher distribution)
+
+zad4.analise=function()
+{
+x1=c(5, 4 ,4 ,6, 4, 6, 3, 3, 4, 5)
+x2=c(3, 2, 4, 5, 3, 4, 3, 4, 2, 4)
+x3=c(4, 6, 4, 2, 4, 5, 5, 3, 6, 4)
+d=data.frame(x1,x2,x3) #The function data.frame() creates data frames, tightly coupled collections of variables which share many of the properties of matrices and of lists, 
+#used as the fundamental data structure by most of R's modeling software.
+ds=stack(d) #Stacking vectors concatenates multiple vectors into a single vector along with a factor indicating where each observation originated. 
+
+#if they are normal for every group
+a1=anova(lm(values~ind,data=ds))
+a=aov(values~ind,data=ds)
+s=summary(a)
+sm=summary(a1)
+s
+sm
+#p-value >=10% accept
+#p-value <5% reject
+#if thy are not normal kruskal.test(value~ind,data=ds)
+}
+
+зад. 5
+ƒанните 'InsectSpray' съдържат бро€ на насекомите в зони третирани с различни препарати срещу насекоми.
+ѕредставете данните графично. ѕроверете дали препаратите действат еднакво. «а кои препарати можем да
+твърдим, че действат еднакво?
+
+zad5.analize=function()
+{
+attach(InsectSprays)
+boxplot(count~spray)
+a=shapiro.test(count[spray=='A'])
+b=shapiro.test(count[spray=='B'])
+c=shapiro.test(count[spray=='C'])
+d=shapiro.test(count[spray=='D'])
+e=shapiro.test(count[spray=='E'])
+f=shapiro.test(count[spray=='F'])
+a # return info for the test
+b # return info for the test
+c # return info for the test
+d # return info for the test
+e # return info for the test
+f # return info for the test
+#InsectSprays # return data for InsectSprays
+total=kruskal.test(count~spray)  
+totalAF=kruskal.test(count~spray,data=InsectSprays[spray=='A'|spray=='F',])
+total AF # return info for the test
+total  # return info for the test
+
+# total sa dannite za SStotal i p-value e mnogo malko => ne sa ednakvi
+#analogichno i za ostanalite AB,AE,AD,AE,....
+}
+
