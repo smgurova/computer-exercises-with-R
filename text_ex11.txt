@@ -1,0 +1,570 @@
+Упражнение 11
+
+Факторен анализ
+
+#https://www.promptcloud.com/blog/exploratory-factor-analysis-in-r/
+#https://www.statmethods.net/advstats/factor.html
+#
+
+
+Факторният анализ е статистически метод, използван за описание на променливостта между наблюдаваните, корелиращи променливи по отношение на потенциално по-малък брой незабелязани променливи, наречени фактори. Например, 
+възможно е вариациите в шест наблюдавани променливи да отразяват главно промените в две незабелязани (основни) променливи. 
+Факторният анализ търси такива съвместни вариации в отговор на незабелязани латентни променливи. Наблюдаваните променливи се моделират като линейни комбинации от потенциални фактори плюс термини "грешка". 
+Факторният анализ има за цел да намери независими латентни променливи.
+
+Зад. 1
+Ние ще използваме Psych пакета в R, който е пакет за личностни, психометрични и психологически изследвания.
+Състои се от набор от данни - bfi набор от данни, който представлява 25 елементи от личността с 3 допълнителни демографски данни за 2800 точки от данни.
+Колоните вече са класифицирани в 5 фактора, поради което имената им започват с букви A (съгласуваност), C (добросъвестност),
+Е (Екстраверсия), N (Невротизъм) и O (Отвореност).
+
+#Installing the Psych package and loading it
+install.packages("psych")
+library(psych)
+#Зареждане на набора от данни
+bfi_data=bfi
+
+# Отстранете редовете с липсващи стойности и запазете само пълни случаи
+bfi_data=bfi_data[complete.cases(bfi_data),]
+
+#Създайте корелационната матрица от bfi_data
+bfi_cor <- cor(bfi_data)
+
+#Фактор анализ на данните
+factors_data <- fa(r = bfi_cor, nfactors = 6)
+
+# Функцията fa () се нуждае от матрица на корелация като r и брой фактори.
+# Стойността по подразбиране е 1, която е нежелана, така че ще уточним коефициентите да бъдат 6 за това упражнение.
+
+
+# Получаване на факторните натоварвания и анализ на модела
+factors_data
+
+
+#Factor Analysis using method =  minres
+#Call: fa(r = bfi_cor, nfactors = 6)
+#Standardized loadings (pattern matrix) based upon correlation matrix
+#MR1   MR2   MR3   MR4   MR5   MR6    h2   u2 com
+#A1        -0.23 -0.04  0.15  0.03 -0.49  0.24 0.379 0.62 2.2
+#A2         0.46  0.31 -0.20  0.09  0.33 -0.07 0.467 0.53 3.3
+#A3         0.52  0.31 -0.24  0.04  0.24  0.12 0.506 0.49 2.8
+#A4         0.40  0.13 -0.18  0.24  0.14  0.08 0.294 0.71 2.8
+#A5         0.57  0.19 -0.25 -0.02  0.14  0.17 0.470 0.53 2.0
+#C1         0.33  0.11  0.43  0.19 -0.01  0.08 0.344 0.66 2.6
+#C2         0.32  0.17  0.42  0.36  0.01  0.18 0.475 0.53 3.7
+#C3         0.32  0.04  0.28  0.36  0.02  0.05 0.317 0.68 3.0
+#C4        -0.47  0.13 -0.39 -0.33 -0.01  0.22 0.555 0.45 3.5
+#C5        -0.49  0.15 -0.21 -0.34  0.11  0.05 0.433 0.57 2.6
+#E1        -0.42 -0.21  0.23  0.16  0.21  0.27 0.414 0.59 3.9
+#E2        -0.62 -0.06  0.19  0.11  0.29  0.18 0.559 0.44 1.9
+#E3         0.54  0.33 -0.05 -0.23 -0.14  0.17 0.507 0.49 2.5
+#E4         0.61  0.19 -0.32  0.01 -0.21  0.11 0.565 0.44 2.1
+#E5         0.52  0.28  0.13 -0.03 -0.20 -0.08 0.410 0.59 2.1
+#N1        -0.42  0.64  0.07  0.07 -0.23 -0.14 0.666 0.33 2.2
+#N2        -0.41  0.63  0.12  0.05 -0.17 -0.20 0.654 0.35 2.3
+#N3        -0.40  0.62  0.06  0.06 -0.01 -0.01 0.549 0.45 1.7
+#N4        -0.53  0.40  0.11 -0.05  0.21  0.09 0.506 0.49 2.4
+#N5        -0.35  0.44 -0.08  0.20  0.11  0.04 0.376 0.62 2.6
+#O1         0.32  0.14  0.31 -0.34 -0.02  0.15 0.357 0.64 3.8
+#O2        -0.20  0.11 -0.36  0.29 -0.07  0.15 0.295 0.70 3.3
+#O3         0.39  0.25  0.27 -0.43  0.01  0.09 0.485 0.52 3.4
+#O4        -0.08  0.22  0.23 -0.21  0.28  0.11 0.241 0.76 4.4
+#O5        -0.20 -0.02 -0.34  0.35 -0.16  0.16 0.330 0.67 3.5
+#gender     0.11  0.21 -0.15  0.21  0.12 -0.21 0.184 0.82 4.9
+#education  0.06 -0.02  0.09 -0.09  0.17 -0.15 0.072 0.93 3.5
+#age        0.15 -0.05  0.05  0.00  0.18 -0.20 0.098 0.90 3.2
+
+#MR1  MR2  MR3  MR4  MR5  MR6
+#SS loadings           4.59 2.34 1.60 1.34 1.01 0.63
+#Proportion Var        0.16 0.08 0.06 0.05 0.04 0.02
+#Cumulative Var        0.16 0.25 0.30 0.35 0.39 0.41
+#Proportion Explained  0.40 0.20 0.14 0.12 0.09 0.05
+#Cumulative Proportion 0.40 0.60 0.74 0.86 0.95 1.00
+
+#Mean item complexity =  2.9
+#Test of the hypothesis that 6 factors are sufficient.
+
+#The degrees of freedom for the null model are  378  and the objective function was  7.79
+#The degrees of freedom for the model are 225  and the objective function was  0.57 
+
+#The root mean square of the residuals (RMSR) is  0.02 
+#The df corrected root mean square of the residuals is  0.03 
+#Fit based upon off diagonal values = 0.98
+#Measures of factor score adequacy             
+#MR1  MR2  MR3  MR4  MR5  MR6
+#Correlation of (regression) scores with factors   0.95 0.92 0.86 0.83 0.80 0.73
+#Multiple R square of scores with factors          0.90 0.84 0.74 0.70 0.65 0.53
+#Minimum correlation of possible factor scores     0.80 0.68 0.48 0.39 0.29 0.05
+
+# Факторните натоварвания показват, че първият фактор представлява N, последван от C, E, A и O.
+# Това означава, че повечето от членовете в данните имат невротизъм в данните.
+# Забелязваме също, че първите пет фактора представляват адекватно категориите фактори, за които са предназначени данните.
+
+#Now we need to consider the loadings more than 0.3 and not loading on more than one factor. 
+#Note that negative values are acceptable here. So let’s first establish the cut off to improve visibility:
+
+print(factors_data$loadings,cutoff = 0.3)
+#Loadings:
+ # MR2    MR3    MR1    MR5    MR4    MR6   
+#A1                             -0.561         0.352
+#A2                              0.644              
+#A3                              0.596              
+#A4                              0.411              
+#A5                              0.473              
+#C1                0.543                            
+#C2                0.661                            
+#C3                0.562                            
+#C4               -0.669                            
+#C5               -0.563                            
+#E1                       0.614                     
+#E2                       0.676                     
+#E3                      -0.320         0.378       
+#E4                      -0.493                0.305
+#E5                      -0.391                     
+#N1         0.822                                   
+#N2         0.825                                   
+#N3         0.690                                   
+#N4         0.439         0.428                     
+#N5         0.473                                   
+#O1                                     0.569       
+#O2                                    -0.427       
+#O3                                     0.655       
+#O4                       0.337         0.367       
+#O5                                    -0.497       
+#gender                          0.327              
+#education                                          
+#age                                                
+
+#MR2   MR3   MR1   MR5   MR4   MR6
+#SS loadings    2.463 2.000 1.863 1.860 1.717 0.820
+#Proportion Var 0.088 0.071 0.067 0.066 0.061 0.029
+#Cumulative Var 0.088 0.159 0.226 0.292 0.354 0.383
+
+#As you can see two variables have become insignificant 
+#and two other have double-loading. Next, we’ll  consider ‘4’ factors:
+
+
+sevenfactor <- fa(r=bfi_cor,nfactors = 7,rotate = "oblimin",fm="minres")
+ print(sevenfactor$loadings,cutoff = 0.3)
+
+#Loadings:
+ # MR2    MR3    MR5    MR1    MR4    MR7    MR6   
+#A1                      -0.504                       0.306
+#A2                       0.638                            
+#A3                       0.630                            
+#A4                       0.428                            
+#A5                       0.506                            
+#C1                0.534                                   
+#C2                0.659                                   
+#C3                0.554                                   
+#C4               -0.676                                   
+#C5               -0.570                                   
+#E1                              0.615                     
+#E2                              0.676                     
+#E3                             -0.330  0.353              
+#E4                       0.303 -0.498                     
+#E5                             -0.395                     
+#N1         0.828                                          
+#N2         0.819                                          
+#N3         0.681                                          
+#N4         0.443                0.428                     
+#N5         0.461                                          
+#O1                                     0.543              
+#O2                                    -0.463              
+#O3                                     0.642              
+#O4                              0.336  0.365              
+#O5                                    -0.540              
+#gender                   0.323                            
+#education                                     0.401       
+#age                                           0.621       
+
+#MR2   MR3   MR5   MR1   MR4   MR7   MR6
+#SS loadings    2.442 1.988 1.933 1.875 1.680 0.668 0.629
+#Proportion Var 0.087 0.071 0.069 0.067 0.060 0.024 0.022
+#Cumulative Var 0.087 0.158 0.227 0.294 0.354 0.378 0.401
+ fa.diagram(sevenfactor)
+ print(sevenfactor)
+
+
+# Клъстърен анализ
+
+#https://www.statmethods.net/advstats/cluster.html
+#https://uc-r.github.io/kmeans_clustering
+#http://girke.bioinformatics.ucr.edu/GEN242/pages/mydoc/Rclustering.html
+#https://data-flair.training/blogs/clustering-in-r-tutorial/
+
+Анализът на клъстерите е част от обучението без надзор. Клъстерът е група данни, които споделят подобни характеристики. 
+Можем да кажем, че клъстерният анализ е повече за откриване, отколкото за прогноза.
+Машината търси сходство в данните. Например, можете да използвате клъстер анализ за следното приложение:
+
+1.Сегментиране на клиенти: Търси сходство между групи клиенти
+2.Клъстериране на фондовия пазар: Групови акции въз основа на представяния
+3.Намалете размерността на набора от данни, като групирате наблюдения с подобни стойности
+
+Най-забележителната разлика между обучението под надзор и без надзор крие в резултатите. 
+Ненадзорното обучение създава нова променлива, етикета, докато контролираното обучение предсказва резултат.
+Машината помага на практикуващия в стремежа да маркира данните въз основа на близка връзка. 
+От аналитика зависи да се възползва от групите и да им даде име.
+
+# Зад.1
+Имате данни за общия разход на клиентите и възрастта им.
+За да подобри рекламата, маркетинговият екип иска да изпраща по-насочени имейли до своите клиенти.
+
+library(ggplot2)
+df <- data.frame(age = c(18, 21, 22, 24, 26, 26, 27, 30, 31, 35, 39, 40, 41, 42, 44, 46, 47, 48, 49, 54),
+    spend = c(10, 11, 22, 15, 12, 13, 14, 33, 39, 37, 44, 27, 29, 20, 28, 21, 30, 31, 23, 24)
+)
+ggplot(df, aes(x = age, y = spend)) +
+    geom_point()
+
+#На фигурата по-горе групирате наблюденията на ръка и определяте всяка от трите групи.
+
+K-means algorithm
+Алгоритъмът се опитва да намери групи, като минимизира разстоянието между наблюденията, наречени локални оптимални решения. 
+Разстоянията се измерват въз основа на координатите на наблюденията.
+
+
+The algorithm works as follow:
+
+    Step 1: Choose groups in the feature plan randomly
+    Step 2: Minimize the distance between the cluster center and the different observations (centroid). It results in groups with observations
+    Step 3: Shift the initial centroid to the mean of the coordinates within a group.
+    Step 4: Minimize the distance according to the new centroids. New boundaries are created. Thus, observations will move from one group to another
+    Repeat until no observation changes groups
+
+K-means usually takes the Euclidean distance between the feature and feature : The algorithm works as follow:
+
+    Step 1: Choose groups in the feature plan randomly
+    Step 2: Minimize the distance between the cluster center and the different observations (centroid). It results in groups with observations
+    Step 3: Shift the initial centroid to the mean of the coordinates within a group.
+    Step 4: Minimize the distance according to the new centroids. New boundaries are created. Thus, observations will move from one group to another
+    Repeat until no observation changes groups
+
+K-means usually takes the Euclidean distance between the feature and feature : The algorithm works as follow:
+
+    Step 1: Choose groups in the feature plan randomly
+    Step 2: Minimize the distance between the cluster center and the different observations (centroid). It results in groups with observations
+    Step 3: Shift the initial centroid to the mean of the coordinates within a group.
+    Step 4: Minimize the distance according to the new centroids. New boundaries are created. Thus, observations will move from one group to another
+    Repeat until no observation changes groups
+
+K-means usually takes the Euclidean distance between the feature and feature:
+ 
+					Distance(x,y)=sum((xi-yi)^2), i, n)
+
+Different measures are available such as the Manhattan distance or Minlowski distance. Note that, K-mean returns different groups each time you run the algorithm. 
+Recall that the first initial guesses are random and compute the distances until the algorithm reaches a homogeneity within groups. 
+That is, k-mean is very sensitive to the first choice, and unless the number of observations and groups are small, it is almost impossible to get the same clustering. 
+ 
+#Select the number of clusters
+
+Another difficulty found with k-mean is the choice of the number of clusters. You can set a high value of , i.e. a large number of groups, to improve stability but you might end up with overfit of data. 
+Overfitting means the performance of the model decreases substantially for new coming data. 
+The machine learnt the little details of the data set and struggle to generalize the overall pattern.
+The number of clusters depends on the nature of the data set, the industry, business and so on. 
+However, there is a rule of thumb to select the appropriate number of clusters:  
+
+	cluster= sqrt(2/n), with equals to the number of observation in the dataset. 
+
+Зад.3
+Ние ще използваме набор от данни за цените на персонални компютри, за да извършим нашия клъстерен анализ.
+Този набор от данни съдържа 6259 наблюдения и 10 функции.Наборът от данни наблюдава цената от 1993 до 1995 г. на 486 персонални компютъра в САЩ.
+Променливите са цена, скорост, овен, екран, CD наред с други.
+ 
+ 
+#Algorithm:
+  # 1. Impoprst data (Въвеждане на данни)
+  # 2. Train the model (Изследвайте модела)
+  # 3.Evaluate the model (Оценете модела)
+
+#1) Import data
+
+ library(dplyr)
+ PATH <-"https://raw.githubusercontent.com/guru99-edu/R-Programming/master/computers.csv"
+ df <- read.csv(PATH) %>%
+   select(-c(X, cd, multi, premium))
+ glimpse(df)
+
+output:
+
+Observations: 6,259
+Variables: 7
+$ price  <int> 1499, 1795, 1595, 1849, 3295, 3695, 1720, 1995, 2225, 2575, 2195, 2605...
+$ speed  <int> 25, 33, 25, 25, 33, 66, 25, 50, 50, 50, 33, 66, 50, 25, 50, 50, 33, 33...
+$ hd     <int> 80, 85, 170, 170, 340, 340, 170, 85, 210, 210, 170, 210, 130, 245, 212...
+$ ram    <int> 4, 2, 4, 8, 16, 16, 4, 2, 8, 4, 8, 8, 4, 8, 8, 4, 2, 4, 4, 8, 4, 4, 16...
+$ screen <int> 14, 14, 15, 14, 14, 14, 14, 14, 14, 15, 15, 14, 14, 14, 14, 14, 14, 15...
+$ ads    <int> 94, 94, 94, 94, 94, 94, 94, 94, 94, 94, 94, 94, 94, 94, 94, 94, 94, 94...
+$ trend  <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1...
+
+summary(df)
+
+ price          speed              hd              ram             screen     
+ Min.   : 949   Min.   : 25.00   Min.   :  80.0   Min.   : 2.000   Min.   :14.00  
+ 1st Qu.:1794   1st Qu.: 33.00   1st Qu.: 214.0   1st Qu.: 4.000   1st Qu.:14.00  
+ Median :2144   Median : 50.00   Median : 340.0   Median : 8.000   Median :14.00  
+ Mean   :2220   Mean   : 52.01   Mean   : 416.6   Mean   : 8.287   Mean   :14.61  
+ 3rd Qu.:2595   3rd Qu.: 66.00   3rd Qu.: 528.0   3rd Qu.: 8.000   3rd Qu.:15.00  
+ Max.   :5399   Max.   :100.00   Max.   :2100.0   Max.   :32.000   Max.   :17.00  
+      ads            trend      
+ Min.   : 39.0   Min.   : 1.00  
+ 1st Qu.:162.5   1st Qu.:10.00  
+ Median :246.0   Median :16.00  
+ Mean   :221.3   Mean   :15.93  
+ 3rd Qu.:275.0   3rd Qu.:21.50  
+ Max.   :339.0   Max.   :35.00
+
+#From the summary statistics, you can see the data has large values.
+#A good practice with k mean and distance calculation is to rescale the data so that the mean is equal to one and the standard deviation is equal to zero. 
+#ou rescale the variables with the scale() function of the dplyr library. The transformation reduces the impact of outliers and allows to compare a sole observation against the mean. 
+#If a standardized value (or z-score) is high, you can be confident that this observation is indeed above the mean (a large z-score implies that this point is far away from the mean in term of standard deviation.
+#A z-score of two indicates the value is 2 standard deviations away from the mean. Note, the z-score follows a Gaussian distribution and is symmetrical around the mean. 
+
+
+rescale_df <- df 
+rescale
+summary(rescale)
+mutate(price_scal = scale(price),
+    hd_scal = scale(hd),
+    ram_scal = scale(ram),
+    screen_scal = scale(screen),
+    ads_scal = scale(ads),
+    trend_scal = scale(trend)) 
+select(-c(price, speed, hd, ram, screen, ads, trend))
+
+kmeans(df, k)
+		arguments:
+	-df: dataset used to run the algorithm
+	-k: Number of clusters
+
+#Let's k=3
+
+
+output:
+K-means clustering with 3 clusters of sizes 2652, 1201, 2406
+
+Cluster means:
+     price    speed       hd       ram   screen      ads    trend
+1 1698.141 45.46342 294.3367  4.772247 14.34050 219.5045 17.02036
+2 3107.475 61.43381 628.9667 15.087427 15.00916 223.8102 14.86012
+3 2351.115 54.52452 445.3616  8.766417 14.70449 222.0287 15.25436
+
+Clustering vector:
+   [1] 1 1 1 1 2 2 1 1 3 3 3 3 1 3 3 3 1 3 3 2 1 3 2 2 2 1 1 2 2 2 1 1 3 3 1 3 3 2 3 3 2 2
+  [43] 3 3 2 3 3 1 3 1 3 3 2 3 3 3 1 2 2 1 2 1 3 3 3 1 3 1 3 2 2 3 1 2 2 2 1 2 3 1 2 3 2 3
+  [85] 3 1 3 1 1 2 2 3 3 3 2 1 1 1 3 1 1 3 1 2 1 2 3 1 1 3 2 3 2 2 1 2 3 3 3 3 1 3 3 2 3 3
+ [127] 2 3 1 1 3 1 3 3 1 3 3 3 3 3 3 2 3 1 2 3 3 3 1 2 3 3 2 3 3 3 2 3 2 2 1 1 3 3 2 1 3 3
+ [169] 1 1 3 3 1 3 2 3 3 3 1 1 3 2 1 3 2 3 1 3 3 2 1 3 1 1 1 3 3 1 3 2 2 3 3 1 1 3 2 2 3 2
+ [211] 3 2 3 3 2 1 3 3 2 1 3 3 3 2 3 3 1 2 3 2 1 3 1 3 3 3 1 1 1 2 1 1 3 3 3 3 2 3 1 2 3 1
+ [253] 3 1 1 3 2 3 1 3 2 3 3 3 1 3 3 3 3 2 3 2 3 3 3 2 3 3 3 1 3 1 3 1 3 3 1 3 3 1 2 2 3 3
+ [295] 3 3 3 2 1 1 1 1 1 3 3 1 2 3 3 2 1 3 2 2 3 1 3 3 3 3 3 2 3 3 1 1 3 3 2 3 1 3 3 1 1 2
+ [337] 1 2 2 2 3 3 2 1 3 3 3 3 3 3 3 3 3 3 3 3 2 3 2 3 1 3 3 2 2 1 3 3 1 1 3 2 3 3 1 1 3 3
+ [379] 1 1 3 3 2 3 3 3 1 3 1 1 3 3 1 1 2 2 3 1 1 3 3 1 3 2 2 3 3 3 3 2 1 3 3 3 2 1 1 1 2 3
+ [421] 2 3 1 3 3 1 2 3 1 3 2 3 3 1 3 1 2 1 2 2 3 3 1 1 3 3 3 1 1 3 1 3 3 3 3 3 2 3 2 3 3 1
+ [463] 2 2 1 1 2 1 3 2 3 1 3 3 1 1 1 1 3 3 3 1 3 1 3 3 2 3 2 2 2 2 3 2 3 1 2 1 3 3 3 3 1 3
+ [505] 2 1 3 2 3 2 2 3 2 1 1 2 1 3 3 1 3 3 1 3 3 2 2 1 3 3 3 1 2 3 3 2 3 1 2 3 3 3 3 3 3 3
+ [547] 3 3 1 1 3 1 2 1 3 1 3 2 3 3 2 3 2 1 3 3 1 1 1 3 1 3 1 1 3 3 3 2 2 3 1 3 2 3 2 3 2 1
+ [589] 1 3 3 1 2 1 3 1 2 2 3 1 2 3 1 3 1 1 3 1 3 1 2 2 2 3 1 2 2 3 3 1 3 1 3 1 3 2 3 3 1 3
+ [631] 1 1 1 1 1 1 3 1 1 3 1 3 1 2 1 2 2 3 1 1 3 3 3 3 1 3 3 1 3 3 2 3 3 3 3 2 3 3 3 3 3 2
+ [673] 2 2 3 3 2 1 3 1 3 1 3 2 1 3 2 2 1 2 3 3 3 2 1 1 3 1 2 1 1 3 1 2 1 1 2 1 1 1 3 3 1 2
+ [715] 1 1 2 2 2 2 2 1 3 3 3 3 3 3 3 1 1 1 1 1 1 1 1 1 3 2 2 3 1 1 1 2 3 1 1 2 1 3 1 3 3 1
+ [757] 1 3 1 1 1 1 1 2 1 3 3 1 1 2 3 3 2 3 3 3 3 1 2 2 1 3 2 3 3 3 3 3 1 2 3 2 1 2 1 2 2 3
+ [799] 2 3 3 2 3 2 1 3 3 3 3 1 3 1 1 2 1 1 3 1 1 3 3 3 2 3 3 1 1 3 1 2 2 3 3 1 1 1 2 3 1 3
+ [841] 2 3 2 3 3 1 1 3 1 3 1 3 2 3 2 3 1 1 3 3 3 1 1 3 2 1 1 3 3 3 1 3 1 3 3 3 3 1 3 3 2 2
+ [883] 1 3 2 1 2 2 3 1 2 2 1 1 3 3 3 3 1 3 2 2 2 1 2 1 3 1 2 1 2 3 1 3 1 1 1 3 1 1 3 1 3 1
+ [925] 3 1 1 1 3 1 1 3 3 1 1 3 3 2 1 1 1 2 1 3 2 3 1 3 1 1 2 2 1 3 2 3 1 3 1 2 3 1 2 1 3 2
+ [967] 1 3 3 3 2 3 2 3 3 3 1 3 1 1 1 2 2 1 3 3 3 1 1 3 1 1 1 2 2 3 3 3 3 1
+ [ reached getOption("max.print") -- omitted 5259 entries ]
+
+Within cluster sum of squares by cluster:
+[1] 224845869 293209393 244081560
+ (between_SS / total_SS =  70.3 %)
+
+Available components:
+
+[1] "cluster"      "centers"      "totss"        "withinss"     "tot.withinss"
+[6] "betweenss"    "size"         "iter"         "ifault"      
+> 
+
+#2) Train the model
+install.packages("animation")	
+
+#After you load the library, you add .ani after kmeans and R will plot all the steps. 
+#For illustration purpose, you only run the algorithm with the rescaled variables hd and ram with three clusters. 
+
+install.packages("animation")	
+ set.seed(2345)
+ library(animation)
+ kmeans.ani(rescale_df[2:3], 3)
+ #Select the columns 2 and 3 of rescale_df data set and run the algorithm with k sets to 3.
+ #Plot the animation.
+
+You can interpret the animation as follow:
+
+    Step 1: R randomly chooses three points
+    Step 2: Compute the Euclidean distance and draw the clusters. You have one cluster in green at the bottom left, one large cluster colored in black at the right and a red one between them.
+    Step 3: Compute the centroid, i.e. the mean of the clusters
+    Repeat until no data changes cluster
+
+The algorithm converged after seven iterations. You can run the k-mean algorithm in our dataset with five clusters and call it pc_cluster. 
+
+pc_cluster <-kmeans(rescale_df, 5)
+
+    The list pc_cluster contains seven interesting elements:
+    pc_cluster$cluster: Indicates the cluster of each observation
+    pc_cluster$centers: The cluster centres
+    pc_cluster$totss: The total sum of squares
+    pc_cluster$withinss: Within sum of square. The number of components return is equal to `k`
+    pc_cluster$tot.withinss: Sum of withinss
+    pc_clusterbetweenss: Total sum of square minus Within sum of square
+    pc_cluster$size: Number of observation within each cluster
+
+You will use the sum of the within sum of square (i.e. tot.withinss) to compute the optimal number of clusters k. 
+Finding k is indeed a substantial task.
+
+##Optimal k 
+One technique to choose the best k is called the elbow method. This method uses within-group homogeneity or within-group heterogeneity to 
+evaluate the variability. In other words, you are interested in the percentage of the variance explained by each cluster. You can expect the variability 
+to increase with the number of clusters, alternatively, heterogeneity decreases. Our challenge is to find the k that is beyond the diminishing returns. 
+Adding a new cluster does not improve the variability in the data because very few information is left to explain.
+
+In this tutorial, we find this point using the heterogeneity measure. The Total within clusters sum of squares is the tot.withinss in the list return by kmean().
+
+You can construct the elbow graph and find the optimal k as follow:
+
+    Step 1: Construct a function to compute the total within clusters sum of squares
+    Step 2: Run the algorithm times
+    Step 3: Create a data frame with the results of the algorithm
+    Step 4: Plot the results
+
+#Step 1) Construct a function to compute the total within clusters sum of squares
+
+kmean_withinss <- function(k) {
+    cluster <- kmeans(rescale_df, k)
+    return (cluster$tot.withinss)
+}
+    function(k): Set the number of arguments in the function
+    kmeans(rescale_df, k): Run the algorithm k times
+    return(cluster$tot.withinss): Store the total within clusters sum of squares
+
+kmean_withinss(2) #[1] 1105373774
+
+#Step 2) Run the algorithm n times
+
+You will use the sapply() function to run the algorithm over a range of k. 
+This technique is faster than creating a loop and store the value. 
+# Set maximum cluster 
+max_k <-20 
+# Run algorithm over a range of k 
+wss <- sapply(2:max_k, kmean_withinss)
+wss
+ [1] 1105373790  762231349  640802505  493184982  416605336  354598290  305237294
+ [8]  267748649  250908794  230462282  216922931  206272726  198145952  178657242
+[15]  172761159  165151066  155376980  147659812  142104841
+
+#Step 3) Create a data frame with the results of the algorithm 
+ # Create a data frame to plot the graph
+ elbow <-data.frame(2:max_k, wss) #Create a data frame with the output of 
+ #the algorithm store in wss 
+ 
+ #Step 4) Plot the results
+
+# Plot the graph with gglop
+ggplot(elbow, aes(x = X2.max_k, y = wss)) +
+    geom_point() +
+    geom_line() +
+    scale_x_continuous(breaks = seq(1, 20, by = 1))
+
+From the graph, you can see the optimal k is seven, where the curve is starting to have a diminishing return.
+Once you have our optimal k, you re-run the algorithm with k equals to 7 and evaluate the clusters.
+
+Examining the cluster
+
+pc_cluster_2 <-kmeans(rescale_df, 7)
+
+As mention before, you can access the remaining interesting information in the list returned by kmean().
+
+pc_cluster_2$cluster
+pc_cluster_2$centers		
+ pc_cluster_2$size	#[1] 1250 1339  933  225 1746  444  322 
+ # 1 cluster - 1250 , 2 cluster-1339 3-933 ..
+ # Standardization makes the interpretation easier. 
+ #Positive values indicate the z-score for a given cluster is above the overall mean. 
+ #For instance, cluster 5 has the highest price average among all the clusters. 
+ 
+ center <-pc_cluster_2$centers
+ center
+
+center <-pc_cluster_2$centers
+center
+
+ price    speed        hd       ram   screen      ads    trend
+1 1502.334 41.04080  258.1576  4.139200 14.23840 219.5384 17.51040
+2 2374.324 52.61464  358.7401  7.680358 14.59746 239.2786 12.48768
+3 2883.901 59.02358  437.6163 11.798499 14.85959 243.3976 12.09753
+4 3736.560 65.41333  550.0133 11.928889 15.31556 233.6178 10.36444
+5 1925.683 48.87171  312.6478  5.449026 14.47537 226.5338 15.89233
+6 2231.718 65.56306  855.9459 13.144144 15.03153 135.3333 26.84910
+7 2952.360 60.73913 1076.0497 22.881988 15.01242 170.9193 24.19255
+
+You can create a heat map with ggplot to help us highlight the difference between categories.
+
+The default colors of ggplot need to be changed with the RColorBrewer library. You can use the conda library and the code to launch in the terminal:
+
+conda install -c r r-rcolorbrewer
+
+To create a heat map, you proceed in three steps:
+
+ 1.Build a data frame with the values of the center and create a variable with the number of the cluster
+ 2.Reshape the data with the gather() function of the tidyr library. You want to transform data from wide to long.
+ 3.Create the palette of colors with colorRampPalette() function
+
+Step 1) Build a data frame 
+library(tidyr)
+
+# create dataset with the cluster number
+
+cluster <- c(1: 7)
+center_df <- data.frame(cluster, center)
+
+# Reshape the data
+
+center_reshape <- gather(center_df, features, values, price: trend)
+head(center_reshape)
+
+cluster features   values
+1       1    price 1502.334
+2       2    price 2374.324
+3       3    price 2883.901
+4       4    price 3736.560
+5       5    price 1925.683
+6       6    price 2231.718
+
+Step 2) Reshape the data
+The code below create the palette of colors you will use to plot the heat map. 
+
+library(RColorBrewer)
+# Create the palette
+hm.palette <-colorRampPalette(rev(brewer.pal(10, 'RdYlGn')),space='Lab')
+
+
+#Step 3) Visualize
+#You can plot the graph and see what the clusters look like. 
+# Plot the heat map
+ggplot(data = center_reshape, aes(x = features, y = cluster, fill = values)) +
+  scale_y_continuous(breaks = seq(1, 7, by = 1)) +
+  geom_tile() +
+  coord_equal() +
+  scale_fill_gradientn(colours = hm.palette(90)) +
+  theme_classic()
+
+
+			SUMMARY
+We can summarize the k-mean algorithm in the table below 
+
+package     objective         function         arguments
+
+base 	   Train k-mean      kmeans()        df,k
+	   Access cluster  kmeans()$cluster
+ 	  Cluster center    kmeans()$centers
+	  size cluster      kmeans()$size
