@@ -11,6 +11,8 @@
 # download fisrt R vesrion (***) and after that R studio 
 # https://rstudio.com/products/rstudio/
 
+#https://www.econometrics-with-r.org/2-1-random-variables-and-probability-distributions.html
+
 
 # In R  we have reserved words
 # enter in the console 
